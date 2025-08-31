@@ -56,13 +56,13 @@ function TableList() {
         <tbody>
           {players.map((player, index) => (
             <tr key={index} className="hover:bg-base-300">
-              <th>{player.id}</th>
-              <th>{player.name}</th>
-              <th>{player.team}</th>
-              <th>{player.position}</th>
-              <th>{player.contractTerms}</th>
-              <th>{player.averageSalary}</th>
-              <th>{String(player.isActive)}</th>
+              <td>{player.id}</td>
+              <td>{player.name}</td>
+              <td>{player.team}</td>
+              <td>{player.position}</td>
+              <td>{player.contractTerms}</td>
+              <td>{player.averageSalary}</td>
+              <td><button className={`btn rounded-full w-20 ${player.isActive ? `btn-primary` : `btn-outline-primary`}`}>{player.isActive ? 'Active' : 'Inactive'}</button></td>
             </tr>
           ))}
         </tbody>
