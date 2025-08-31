@@ -2,6 +2,8 @@
 
 Finally getting back into React after learning KnockoutJS. So I thought I would ease my way back in with a CRUD tutorial.
 
+<img src="frontend/screenshots/nfl_contracts_overview.png" alt="NFL Contracts Home Page" />
+
 ## License
 
 MIT License
