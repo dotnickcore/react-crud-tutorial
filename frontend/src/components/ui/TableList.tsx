@@ -62,7 +62,9 @@ function TableList() {
               <td>{player.position}</td>
               <td>{player.contractTerms}</td>
               <td>{player.averageSalary}</td>
-              <td><button className={`btn rounded-full w-20 ${player.isActive ? `btn-primary` : `btn-outline-primary`}`}>{player.isActive ? 'Active' : 'Inactive'}</button></td>
+              <td><button className={`btn rounded-full w-20 ${player.isActive ? `btn-primary` : `btn-outline btn-primary`}`}>{player.isActive ? 'Active' : 'Inactive'}</button></td>
+              <td><button className="btn btn-secondary rounded-full w-20">Update</button></td>
+              <td><button className="btn btn-accent rounded-full w-20">Delete</button></td>
             </tr>
           ))}
         </tbody>
