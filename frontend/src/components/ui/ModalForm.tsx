@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 interface ModalFormProps {
   isOpen: boolean;
   onClose: () => void;
@@ -6,9 +8,42 @@ interface ModalFormProps {
 }
 
 function ModalForm({ isOpen, onClose, mode, onSubmit }: ModalFormProps) {
+  const [playerName, setPlayerName] = useState('');
+  const [team, setTeam] = useState('');
+  const [position, setPosition] = useState('');
+  const [contractValue, setContractValue] = useState('');
+  const [years, setYears] = useState(0);
+  const [status, setStatus] = useState(false);
+
+  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setStatus(e.target.value === 'Active');
+  };
+
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit();
+
+    // Log all form values
+    console.log('Form submitted with values:');
+    console.log('Player Name:', playerName);
+    console.log('Team:', team);
+    console.log('Position:', position);
+    console.log('Contract Value:', contractValue);
+    console.log('Years:', years);
+    console.log('Status:', status ? 'Active' : 'Inactive');
+
+    // Log as a single object for easier reading
+    const formData = {
+      playerName,
+      team,
+      position,
+      contractValue,
+      years,
+      status: status ? 'Active' : 'Inactive',
+    };
+    console.log('Form Data Object:', formData);
+
+    onSubmit(); // Call the onSubmit prop if needed
+    onClose(); // Close the modal
   };
 
   if (!isOpen) return null;
@@ -26,13 +61,23 @@ function ModalForm({ isOpen, onClose, mode, onSubmit }: ModalFormProps) {
               <label className="label">
                 <span className="label-text">Player Name</span>
               </label>
-              <input type="text" className="input input-bordered" />
+              <input
+                type="text"
+                className="input input-bordered"
+                value={playerName}
+                onChange={(e) => setPlayerName(e.target.value)}
+              />
             </div>
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Team</span>
               </label>
-              <select className="select">
+              <select
+                className="select select-bordered"
+                value={team}
+                onChange={(e) => setTeam(e.target.value)}
+              >
+                <option value="">Select Team</option>
                 <option value="Arizona Cardinals">Arizona Cardinals</option>
                 <option value="Atlanta Falcons">Atlanta Falcons</option>
                 <option value="Baltimore Ravens">Baltimore Ravens</option>
@@ -81,52 +126,71 @@ function ModalForm({ isOpen, onClose, mode, onSubmit }: ModalFormProps) {
               <label className="label">
                 <span className="label-text">Position</span>
               </label>
-              <select defaultValue="Quarterback" className="select">
-                <option>Quarterback</option>
-                <option>Running Back</option>
-                <option>Wide Receiver</option>
-                <option>Tight End</option>
-                <option>Offensive Guard</option>
-                <option>Right Guard</option>
-                <option>Left Guard</option>
-                <option>Offensive Tackle</option>
-                <option>Right Tackle</option>
-                <option>Left Tackle</option>
-                <option>Center</option>
-                <option>Defensive Tackle</option>
-                <option>Defensive End</option>
-                <option>Middle Linebacker</option>
-                <option>Outside Linebacker</option>
-                <option>Cornerback</option>
-                <option>Safety</option>
-                <option>Free Safety</option>
-                <option>Strong Safety</option>
-                <option>Long Snapper</option>
-                <option>Kicker</option>
-                <option>Punter</option>
+              <select
+                className="select select-bordered"
+                value={position}
+                onChange={(e) => setPosition(e.target.value)}
+              >
+                <option value="">Select Position</option>
+                <option value="Quarterback">Quarterback</option>
+                <option value="Running Back">Running Back</option>
+                <option value="Wide Receiver">Wide Receiver</option>
+                <option value="Tight End">Tight End</option>
+                <option value="Offensive Guard">Offensive Guard</option>
+                <option value="Right Guard">Right Guard</option>
+                <option value="Left Guard">Left Guard</option>
+                <option value="Offensive Tackle">Offensive Tackle</option>
+                <option value="Right Tackle">Right Tackle</option>
+                <option value="Left Tackle">Left Tackle</option>
+                <option value="Center">Center</option>
+                <option value="Defensive Tackle">Defensive Tackle</option>
+                <option value="Defensive End">Defensive End</option>
+                <option value="Middle Linebacker">Middle Linebacker</option>
+                <option value="Outside Linebacker">Outside Linebacker</option>
+                <option value="Cornerback">Cornerback</option>
+                <option value="Safety">Safety</option>
+                <option value="Free Safety">Free Safety</option>
+                <option value="Strong Safety">Strong Safety</option>
+                <option value="Long Snapper">Long Snapper</option>
+                <option value="Kicker">Kicker</option>
+                <option value="Punter">Punter</option>
               </select>
             </div>
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Contract Value</span>
               </label>
-              <input type="text" className="input input-bordered" />
+              <input
+                type="text"
+                className="input input-bordered"
+                value={contractValue}
+                onChange={(e) => setContractValue(e.target.value)}
+              />
             </div>
 
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Years</span>
               </label>
-              <input type="number" className="input input-bordered" />
+              <input
+                type="number"
+                className="input input-bordered"
+                value={years}
+                onChange={(e) => setYears(Number(e.target.value))}
+              />
             </div>
 
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Status</span>
               </label>
-              <select className="select select-bordered w-full max-w-xs">
-                <option>Active</option>
-                <option>Inactive</option>
+              <select
+                className="select select-bordered"
+                value={status ? 'Active' : 'Inactive'}
+                onChange={handleStatusChange}
+              >
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
               </select>
             </div>
           </div>

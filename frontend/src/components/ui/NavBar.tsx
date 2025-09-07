@@ -46,7 +46,7 @@ function NavBar({ onOpen }: { onOpen: React.MouseEventHandler<HTMLElement> }) {
         
         <a className="btn btn-primary btn-sm md:btn-md ml-2" onClick={onOpen}>
           <span className="hidden sm:inline">Add Player</span>
-          <span className="sm:hidden">+</span>
+          <span className="sm:hidden">Add</span>
         </a>
       </div>
     </div>
