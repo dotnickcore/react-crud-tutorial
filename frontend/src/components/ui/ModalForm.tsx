@@ -11,23 +11,28 @@ function ModalForm({ isOpen, onClose, mode, onSubmit }: ModalFormProps) {
     onSubmit();
   };
 
-  return (
-    <>
-      <dialog id="my_modal_3" className="modal" open={isOpen}>
-        <div className="modal-box">
-          <h3 className="font-bold text-lg py-4">
-            {mode === 'edit'
-              ? 'Edit Player Contract'
-              : 'Player Contract Details'}
-          </h3>
-          <form method="dialog" onSubmit={handleFormSubmit}>
-            <div className="flex mb-4 justify-between">
-              <label className="input">
-                <input type="text" className="grow" placeholder="Player Name" />
-              </label>
-            </div>
+  if (!isOpen) return null;
 
-            <div className="flex mb-4 justify-between">
+  return (
+    <div className="modal modal-open">
+      <div className="modal-box max-w-full md:max-w-2xl mx-4 md:mx-0">
+        <h3 className="font-bold text-lg py-4">
+          {mode === 'edit' ? 'Edit Player Contract' : 'Player Contract Details'}
+        </h3>
+
+        <form onSubmit={handleFormSubmit} className="space-y-4">
+          {/* Add your form fields here */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Player Name</span>
+              </label>
+              <input type="text" className="input input-bordered" />
+            </div>
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Team</span>
+              </label>
               <select className="select">
                 <option value="Arizona Cardinals">Arizona Cardinals</option>
                 <option value="Atlanta Falcons">Atlanta Falcons</option>
@@ -73,8 +78,10 @@ function ModalForm({ isOpen, onClose, mode, onSubmit }: ModalFormProps) {
                 </option>
               </select>
             </div>
-
-            <div className="flex mb-4 justify-between">
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Position</span>
+              </label>
               <select defaultValue="Quarterback" className="select">
                 <option>Quarterback</option>
                 <option>Running Back</option>
@@ -100,41 +107,40 @@ function ModalForm({ isOpen, onClose, mode, onSubmit }: ModalFormProps) {
                 <option>Punter</option>
               </select>
             </div>
-
-            <div className="flex mb-4 justify-between">
-              <label className="input">
-                <input
-                  type="text"
-                  className="grow"
-                  placeholder="Contract Terms"
-                />
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Contract Value</span>
               </label>
+              <input type="text" className="input input-bordered" />
             </div>
 
-            <div className="flex mb-4 justify-between">
-              <label className="input">
-                <input
-                  type="text"
-                  className="grow"
-                  placeholder="Average Salary"
-                />
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Years</span>
               </label>
+              <input type="number" className="input input-bordered" />
             </div>
+          </div>
 
-            <button
-              type="button"
-              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-              onClick={onClose}
-            >
-              ✕
+          <div className="modal-action">
+            <button type="button" className="btn btn-ghost" onClick={onClose}>
+              Cancel
             </button>
             <button type="submit" className="btn btn-success">
-              {mode === 'edit' ? 'Save Changes' : 'Add Player Contract'}
+              {mode === 'edit' ? 'Save Changes' : 'Add Player'}
             </button>
-          </form>
-        </div>
-      </dialog>
-    </>
+          </div>
+        </form>
+
+        <button
+          type="button"
+          className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+          onClick={onClose}
+        >
+          ✕
+        </button>
+      </div>
+    </div>
   );
 }
 
