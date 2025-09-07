@@ -1,4 +1,8 @@
-function TableList() {
+interface TableListProps {
+  handleOpen: (mode: string) => void;
+}
+
+function TableList({ handleOpen }: TableListProps) {
   const players = [
     {
       id: 1,
@@ -50,21 +54,37 @@ function TableList() {
             <th>Position</th>
             <th>Contract Terms</th>
             <th>Average Salary</th>
-            <th>Is Active</th>
+            <th>Status</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {players.map((player, index) => (
-            <tr key={index} className="hover:bg-base-300">
+          {players.map((player) => (
+            <tr key={player.id} className="hover:bg-base-300">
               <td>{player.id}</td>
               <td>{player.name}</td>
               <td>{player.team}</td>
               <td>{player.position}</td>
               <td>{player.contractTerms}</td>
               <td>{player.averageSalary}</td>
-              <td><button className={`btn rounded-full w-20 ${player.isActive ? `btn-primary` : `btn-outline btn-primary`}`}>{player.isActive ? 'Active' : 'Inactive'}</button></td>
-              <td><button className="btn btn-secondary rounded-full w-20">Update</button></td>
-              <td><button className="btn btn-accent rounded-full w-20">Delete</button></td>
+              <td>
+                <button className={`btn rounded-full w-20 ${player.isActive ? 'btn-primary' : 'btn-outline btn-primary'}`}>
+                  {player.isActive ? 'Active' : 'Inactive'}
+                </button>
+              </td>
+              <td>
+                <div className="flex space-x-2">
+                  <button 
+                    onClick={() => handleOpen('edit')} 
+                    className="btn btn-secondary rounded-full w-20"
+                  >
+                    Update
+                  </button>
+                  <button className="btn btn-accent rounded-full w-20">
+                    Delete
+                  </button>
+                </div>
+              </td>
             </tr>
           ))}
         </tbody>

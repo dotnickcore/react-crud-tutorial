@@ -1,4 +1,4 @@
-function NavBar() {
+function NavBar({ onOpen }: { onOpen: React.MouseEventHandler<HTMLElement> }) {
   return (
     <div className="navbar bg-base-100 shadow-sm">
       <div className="navbar-start">
@@ -8,7 +8,7 @@ function NavBar() {
         <input type="text" placeholder="Search" className="input input-bordered w-100 md:w-auto" />
       </div>
       <div className="navbar-end">
-        <a className="btn btn-primary">Add Player</a>
+        <a className="btn btn-primary" onClick={onOpen}>Add Player</a>
       </div>
     </div>
   );
