@@ -21,7 +21,6 @@ function ModalForm({ isOpen, onClose, mode, onSubmit }: ModalFormProps) {
         </h3>
 
         <form onSubmit={handleFormSubmit} className="space-y-4">
-          {/* Add your form fields here */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="form-control">
               <label className="label">
@@ -119,6 +118,16 @@ function ModalForm({ isOpen, onClose, mode, onSubmit }: ModalFormProps) {
                 <span className="label-text">Years</span>
               </label>
               <input type="number" className="input input-bordered" />
+            </div>
+
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Status</span>
+              </label>
+              <select className="select select-bordered w-full max-w-xs">
+                <option>Active</option>
+                <option>Inactive</option>
+              </select>
             </div>
           </div>
 
