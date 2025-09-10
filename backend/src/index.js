@@ -10,16 +10,8 @@ app.get('/', (req, res) => {
   res.json({ message: 'Hello World!' });
 });
 
-app.get('/api/users', (req, res) => {
-  res.json([
-    { id: 1, name: 'John Doe' },
-    { id: 2, name: 'Jane Smith' }
-  ]);
-});
-
-app.post('/api/users', (req, res) => {
-  const { name } = req.body;
-  res.json({ id: 3, name, message: 'User created successfully' });
+app.get('/v1/', (req, res) => {
+  res.send('<h1>Hello Backend</h1>');
 });
 
 // Start server
