@@ -286,6 +286,106 @@ const togglePlayerStatus = async (req, res) => {
   }
 };
 
+// SEARCH PLAYERS BY NAME (with partial matching)
+// SEARCH PLAYERS BY NAME (with better space handling and multiple search terms)
+const searchPlayersByName = async (req, res) => {
+  try {
+    const { name, isActive, team_id, position_id, exact } = req.query;
+    
+    // Check if name parameter is provided
+    if (!name) {
+      return res.status(400).json({
+        success: false,
+        message: 'Name parameter is required for search'
+      });
+    }
+
+    let query = `
+      SELECT 
+        p.id, 
+        p.name AS player_name, 
+        t.name AS team_name,
+        pos.name AS position_name,
+        p.contractValue,
+        p.contractYears,
+        p.isActive
+      FROM players p
+      LEFT JOIN teams t ON p.team_id = t.id
+      LEFT JOIN positions pos ON p.position_id = pos.id
+    `;
+    
+    let queryParams = [];
+    let whereClauses = [];
+    let paramCount = 0;
+
+    // Handle name search with different modes
+    if (exact === 'true') {
+      // Exact match (case-insensitive)
+      paramCount++;
+      queryParams.push(name.trim()); // Trim spaces from exact search
+      whereClauses.push(`p.name ILIKE $${paramCount}`);
+    } else {
+      // Partial match with space handling - search for each word separately
+      const searchTerms = name.trim().split(/\s+/).filter(term => term.length > 0);
+      
+      if (searchTerms.length > 0) {
+        const nameConditions = [];
+        searchTerms.forEach(term => {
+          paramCount++;
+          queryParams.push(`%${term}%`);
+          nameConditions.push(`p.name ILIKE $${paramCount}`);
+        });
+        whereClauses.push(`(${nameConditions.join(' AND ')})`);
+      }
+    }
+
+    // Add optional filters
+    if (isActive !== undefined) {
+      paramCount++;
+      const isActiveBool = isActive === 'true';
+      queryParams.push(isActiveBool);
+      whereClauses.push(`p.isActive = $${paramCount}`);
+    }
+
+    if (team_id) {
+      paramCount++;
+      queryParams.push(parseInt(team_id));
+      whereClauses.push(`p.team_id = $${paramCount}`);
+    }
+
+    if (position_id) {
+      paramCount++;
+      queryParams.push(parseInt(position_id));
+      whereClauses.push(`p.position_id = $${paramCount}`);
+    }
+
+    // Add WHERE clause if any conditions exist
+    if (whereClauses.length > 0) {
+      query += ' WHERE ' + whereClauses.join(' AND ');
+    }
+
+    query += ' ORDER BY p.name;';
+
+    const result = await pool.query(query, queryParams);
+
+    res.status(200).json({
+      success: true,
+      data: result.rows,
+      count: result.rowCount,
+      searchTerm: name,
+      searchMode: exact === 'true' ? 'exact' : 'partial'
+    });
+
+  } catch (error) {
+    console.error('Error searching players:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to search players',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   getAllPlayers,
   getPlayerById,
@@ -293,4 +393,5 @@ module.exports = {
   updatePlayer,
   deletePlayer,
   togglePlayerStatus,
+  searchPlayersByName
 };

@@ -8,4 +8,4 @@ SELECT
     p.isActive
 FROM players p
 LEFT JOIN teams t ON p.team_id = t.id
-LEFT JOIN positions pos ON p.position_id = pos.id; 
+LEFT JOIN positions pos ON p.position_id = pos.id;

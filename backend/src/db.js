@@ -1,10 +1,8 @@
 // db.js
-import pg from 'pg';
-import * as dotenv from 'dotenv';
+const pg = require('pg');
+require('dotenv').config(); // Load environment variables
 
-dotenv.config();
-
-// Destructure Pool from pg, not Client
+// Destructure Pool from pg
 const { Pool } = pg;
 
 // Create a new POOL instance
@@ -19,9 +17,6 @@ const pool = new Pool({
     connectionTimeoutMillis: 2000,
 });
 
-// You don't need to call pool.connect() here.
-// The pool will manage connections automatically.
-
 // Optional: Listen for pool events
 pool.on('connect', () => {
     console.log('Database connected');
@@ -32,4 +27,4 @@ pool.on('error', (err) => {
 });
 
 // Export the pool for use in other files
-export default pool;
+module.exports = pool;

@@ -1,5 +1,5 @@
 const express = require('express');
-import cors from 'cors'
+const cors = require('cors');
 const app = express();
 const teamRoutes = require('./routes/teamRoutes')
 const positionRoutes = require('./routes/positionRoutes')
@@ -18,9 +18,10 @@ app.use("/api/v1/teams", teamRoutes);
 // positions route
 app.use("/api/v1/positions", positionRoutes);
 
-app.use('*', (req, res) => {
+app.use((req, res) => {
     res.status(404).json({
-        message: `${req.originalUrl} - Route Not Found`,
+        success: false,
+        message: `Route not found: ${req.originalUrl}`,
     });
 });
 
