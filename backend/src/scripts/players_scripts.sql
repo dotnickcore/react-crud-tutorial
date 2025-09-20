@@ -12,3 +12,6 @@
 
 INSERT INTO players (name, team_id, position_id, contractValue, contractYears)
 VALUES ('Dak Prescott', 9, 1, 240000000, 4);
+
+INSERT INTO players (name, team_id, position_id, contractValue, contractYears)
+VALUES ('Matthew Stafford', 19, 1, 84000000, 2);

@@ -1,22 +1,30 @@
 const express = require('express');
 import cors from 'cors'
 const app = express();
-const PORT = process.env.PORT || 3000;
+const teamRoutes = require('./routes/teamRoutes')
+const positionRoutes = require('./routes/positionRoutes')
+const playerRoutes = require('./routes/playerRoutes')
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Routes
-app.get('/', (req, res) => {
-  res.json({ message: 'Hello World!' });
+// teams route
+app.use("/api/v1/players", playerRoutes);
+
+// teams route
+app.use("/api/v1/teams", teamRoutes);
+
+// positions route
+app.use("/api/v1/positions", positionRoutes);
+
+app.use('*', (req, res) => {
+    res.status(404).json({
+        message: `${req.originalUrl} - Route Not Found`,
+    });
 });
 
-app.get('/v1/', (req, res) => {
-  res.send('<h1>Hello Backend</h1>');
-});
-
-// Start server
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
