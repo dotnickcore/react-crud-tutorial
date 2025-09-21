@@ -41,7 +41,7 @@ const getAllPlayers = async (req, res) => {
       query += ' WHERE ' + whereClauses.join(' AND ');
     }
 
-    query += ' ORDER BY p.name;';
+    query += ' ORDER BY p.id;';
 
     const result = await pool.query(query, queryParams);
 
@@ -110,21 +110,20 @@ const createPlayer = async (req, res) => {
       position_id,
       contractValue,
       contractYears,
-      isActive,
     } = req.body;
 
     const query = `
-      INSERT INTO players (name, team_id, position_id, contractValue, contractYears, isActive)
-      VALUES ($1, $2, $3, $4, $5, $6)
+      INSERT INTO players (name, team_id, position_id, contractValue, contractYears)
+      VALUES ($1, $2, $3, $4, $5)
       RETURNING *;
     `;
+
     const values = [
       name,
       team_id || null,
       position_id || null,
       contractValue,
-      contractYears,
-      isActive !== false,
+      contractYears
     ];
 
     const result = await pool.query(query, values);
@@ -154,13 +153,12 @@ const updatePlayer = async (req, res) => {
       position_id,
       contractValue,
       contractYears,
-      isActive,
     } = req.body;
 
     const query = `
       UPDATE players 
-      SET name = $1, team_id = $2, position_id = $3, contractValue = $4, contractYears = $5, isActive = $6
-      WHERE id = $7
+      SET name = $1, team_id = $2, position_id = $3, contractValue = $4, contractYears = $5
+      WHERE id = $6
       RETURNING *;
     `;
     const values = [
@@ -169,7 +167,6 @@ const updatePlayer = async (req, res) => {
       position_id || null,
       contractValue,
       contractYears,
-      isActive,
       id,
     ];
 
@@ -292,14 +289,16 @@ const searchPlayersByName = async (req, res) => {
   try {
     const { name, isActive, team_id, position_id, exact } = req.query;
     
-    // Check if name parameter is provided
-    if (!name) {
+    // Check if name is provided AND has non-space content
+    if (!name || !name.trim()) {
       return res.status(400).json({
         success: false,
-        message: 'Name parameter is required for search'
+        message: 'Name parameter is required and cannot be empty',
+        data: null
       });
     }
 
+    const trimmedName = name.trim();
     let query = `
       SELECT 
         p.id, 
@@ -316,55 +315,62 @@ const searchPlayersByName = async (req, res) => {
     
     let queryParams = [];
     let whereClauses = [];
-    let paramCount = 0;
 
-    // Handle name search with different modes
+    // Handle name search
     if (exact === 'true') {
-      // Exact match (case-insensitive)
-      paramCount++;
-      queryParams.push(name.trim()); // Trim spaces from exact search
-      whereClauses.push(`p.name ILIKE $${paramCount}`);
+      // Exact match
+      queryParams.push(trimmedName);
+      whereClauses.push(`p.name ILIKE $${queryParams.length}`);
     } else {
-      // Partial match with space handling - search for each word separately
-      const searchTerms = name.trim().split(/\s+/).filter(term => term.length > 0);
+      // Partial match with space handling
+      const searchTerms = trimmedName.split(/\s+/).filter(term => term.length > 0);
       
       if (searchTerms.length > 0) {
         const nameConditions = [];
         searchTerms.forEach(term => {
-          paramCount++;
           queryParams.push(`%${term}%`);
-          nameConditions.push(`p.name ILIKE $${paramCount}`);
+          nameConditions.push(`p.name ILIKE $${queryParams.length}`);
         });
         whereClauses.push(`(${nameConditions.join(' AND ')})`);
+      } else {
+        // This handles case where trimmedName is empty after split (shouldn't happen due to earlier check)
+        return res.status(400).json({
+          success: false,
+          message: 'Valid name parameter is required',
+          data: null
+        });
       }
     }
 
     // Add optional filters
     if (isActive !== undefined) {
-      paramCount++;
       const isActiveBool = isActive === 'true';
       queryParams.push(isActiveBool);
-      whereClauses.push(`p.isActive = $${paramCount}`);
+      whereClauses.push(`p.isActive = $${queryParams.length}`);
     }
 
     if (team_id) {
-      paramCount++;
       queryParams.push(parseInt(team_id));
-      whereClauses.push(`p.team_id = $${paramCount}`);
+      whereClauses.push(`p.team_id = $${queryParams.length}`);
     }
 
     if (position_id) {
-      paramCount++;
       queryParams.push(parseInt(position_id));
-      whereClauses.push(`p.position_id = $${paramCount}`);
+      whereClauses.push(`p.position_id = $${queryParams.length}`);
     }
 
     // Add WHERE clause if any conditions exist
     if (whereClauses.length > 0) {
       query += ' WHERE ' + whereClauses.join(' AND ');
+    } else {
+      // This should not happen due to our earlier checks, but as a safety net
+      query += ' WHERE 1=0'; // Return no results
     }
 
     query += ' ORDER BY p.name;';
+
+    console.log('Final query:', query); // DEBUG
+    console.log('Query params:', queryParams); // DEBUG
 
     const result = await pool.query(query, queryParams);
 
@@ -372,7 +378,7 @@ const searchPlayersByName = async (req, res) => {
       success: true,
       data: result.rows,
       count: result.rowCount,
-      searchTerm: name,
+      searchTerm: trimmedName,
       searchMode: exact === 'true' ? 'exact' : 'partial'
     });
 
@@ -381,7 +387,8 @@ const searchPlayersByName = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to search players',
-      error: error.message
+      error: error.message,
+      data: null
     });
   }
 };

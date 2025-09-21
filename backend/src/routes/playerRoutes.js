@@ -10,6 +10,9 @@ const {
   searchPlayersByName
 } = require('../controllers/playerController');
 
+// GET /api/players/search?name=dak - Search players by name
+router.get('/search', searchPlayersByName);
+
 // GET/api/v1/players - Get all players with optional query params: ?isActive=true&team_id=1&position_id=2
 router.get('/', getAllPlayers);
 
@@ -27,8 +30,5 @@ router.delete('/:id', deletePlayer);
 
 // PATCH/api/v1/api/players/:id/status - Toggle active status (body: { isActive: true/false })
 router.patch('/:id/status', togglePlayerStatus);
-
-// GET /api/players/search?name=dak - Search players by name
-router.get('/search', searchPlayersByName);
 
 module.exports = router;

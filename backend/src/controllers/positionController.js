@@ -21,7 +21,7 @@ const getAllPositions = async (req, res) => {
       query += ' WHERE ' + whereClauses.join(' AND ');
     }
 
-    query += ' ORDER BY name;'; // Always sort
+    query += ' ORDER BY id;'; // Always sort
 
     // Execute the query with parameters
     const result = await pool.query(query, queryParams);

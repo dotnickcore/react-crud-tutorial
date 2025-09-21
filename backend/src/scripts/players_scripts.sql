@@ -15,3 +15,7 @@ VALUES ('Dak Prescott', 9, 1, 240000000, 4);
 
 INSERT INTO players (name, team_id, position_id, contractValue, contractYears)
 VALUES ('Matthew Stafford', 19, 1, 84000000, 2);
+
+UPDATE players 
+SET name ='', team_id = $2, position_id = $3, contractValue = $4, contractYears = $5
+WHERE id = $6
