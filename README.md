@@ -9,7 +9,7 @@ To simplify the complex task of managing NFL salaries, providing a clear and cen
 **Server:** Node, Express, Postgresql, React (TypeScript), DaisyUI, TailwindCSS
 
 ## Screenshot
-<img src="frontend/screenshots/nfl_contracts_overview.png" alt="NFL Contracts Home Page" />
+![Description of GIF](./frontend/screenshots/nfl_crud_gif.gif)
 
 ## Endpoints
 ### Players
